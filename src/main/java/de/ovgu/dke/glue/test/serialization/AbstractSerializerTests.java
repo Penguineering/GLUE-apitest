@@ -7,19 +7,51 @@ import de.ovgu.dke.glue.api.serialization.SerializationException;
 import de.ovgu.dke.glue.api.serialization.SerializationProvider;
 import de.ovgu.dke.glue.api.serialization.Serializer;
 
+/**
+ * <p>
+ * This test case checks whether an implementation of {@link Serializer} follows
+ * the rules defined by the Glue-API or not. All you have to do is to extend
+ * this test case and override the <code>getSerializer(String format)</code>
+ * -Method that injects your serializer implementation into the test case.
+ * </p>
+ * <p>
+ * It is highly recommended that you extend this basic test case according to
+ * your implementation specific test purposes. For example
+ * {@link SerializationException} can't be tested.
+ * </p>
+ * <p>
+ * Of course you are free to extend this test case for your specific test
+ * purposes.
+ * </p>
+ * 
+ * @author Sebastian Dorok
+ * 
+ */
 public abstract class AbstractSerializerTests {
 
 	/**
+	 * <p>
+	 * This method must be overridden by an implementation specific variant that
+	 * returns the serializer implementation uner test.
+	 * </p>
 	 * 
 	 * @param format
 	 *            if needed for instantiation of serializer, else it can be
 	 *            ignored
-	 * @return a serializer that can be tested
+	 * @return serializer instance that will be tested
 	 */
 	public abstract Serializer getSerializer(String format);
 
 	/**
-	 * Test whether serializer returns correct format.
+	 * <p>
+	 * Test whether serializer returns correct format. Therefore the allowed
+	 * format <code>SerializationProvider.BINARY</code> is used to get a
+	 * serializer.
+	 * </p>
+	 * <p>
+	 * In case of serializers that don't support dynamic formats this test will
+	 * always pass if the internal format is allowed.
+	 * </p>
 	 */
 	@Test
 	public void T00_getFormat() {
@@ -33,34 +65,18 @@ public abstract class AbstractSerializerTests {
 	}
 
 	/**
-	 * Test reaction when format argument is NULL. There should be a default
-	 * format that is not NULL according to the API.
-	 * 
-	 * In case of serializers that don't support dynamic formats this test will
-	 * always pass.
-	 */
-	@Test
-	public void T01_getFormat_NullFormat() {
-		Serializer ser = getSerializer(null);
-		assertNotNull(
-				"Serializer doesn't handle formats correctly - NULL format.",
-				ser.getFormat());
-		assertTrue(
-				"Serializer doesn't handle formats correctly - not allowed format",
-				matchesAllowedFormats(ser.getFormat()));
-	}
-
-	/**
+	 * <p>
 	 * {@link Serializer} interface claims that the serializer have to take care
 	 * that the format is one of the defined in {@link SerializationProvider}.
 	 * It is not specified how this should be handled. Test case tests only
-	 * return value. Test fails if wrong format is returned.
-	 * 
+	 * return value. Test fails if not allowed format is returned. </p
+	 * <p>
 	 * In case of serializers that don't support dynamic formats this test will
-	 * always pass.
+	 * always pass if the internal format is allowed.
+	 * </p>
 	 */
 	@Test
-	public void T02_getFormat_NonSuitableArgument() {
+	public void T01_getFormat_UnknownFormat() {
 		Serializer ser = getSerializer("WRONG_FORMAT");
 		assertNotSame(
 				"Serializer doesn't handle formats correctly - not allowed format",
@@ -71,10 +87,39 @@ public abstract class AbstractSerializerTests {
 	}
 
 	/**
-	 * Test if serialization and deserialization works by serializing a string
-	 * and deserializing it.
-	 * 
-	 * The string contains: characters
+	 * <p>
+	 * {@link Serializer} interface claims that the serializer have to take care
+	 * that the format is one of the defined in {@link SerializationProvider}.
+	 * It is not specified how this should be handled. Test case tests if
+	 * serializer implementation handles NULL values. Test fails if NULL or not
+	 * allowed format is returned. </p
+	 * <p>
+	 * <p>
+	 * In case of serializers that don't support dynamic formats this test will
+	 * always pass if the internal format is allowed.
+	 * </p>
+	 */
+	@Test
+	public void T02_getFormat_NullFormat() {
+		Serializer ser = getSerializer(null);
+		assertNotNull(
+				"Serializer doesn't handle formats correctly - NULL format.",
+				ser.getFormat());
+		assertTrue(
+				"Serializer doesn't handle formats correctly - not allowed format",
+				matchesAllowedFormats(ser.getFormat()));
+	}
+
+	/**
+	 * <p>
+	 * This test checks the serialization and deserialization of characters.
+	 * </p>
+	 * <p>
+	 * The test calls for serilizer of format
+	 * <code>SerializationProvider.STRING</code>. Although the serializer under
+	 * test doesn't support <code>SerializationProvider.STRING</code> it must
+	 * handle string payloads in this test correctly, i.e. as objects or binary.
+	 * </p>
 	 */
 	@Test
 	public void T10_serializeAndDeserialize_Characters() {
@@ -86,16 +131,21 @@ public abstract class AbstractSerializerTests {
 			assertEquals("Deserialized payload differs from serialized one.",
 					payload, ser.deserialize(o));
 		} catch (SerializationException e) {
-			e.printStackTrace();
 			fail("Caught unexpected serialization exception!");
 		}
 	}
 
 	/**
-	 * Test if serialization and deserialization works by serializing a string
-	 * and deserializing it.
-	 * 
-	 * The string contains: characters and whitespaces
+	 * <p>
+	 * This test checks the serialization and deserialization of characters and
+	 * whitespaces.
+	 * </p>
+	 * <p>
+	 * The test calls for serilizer of format
+	 * <code>SerializationProvider.STRING</code>. Although the serializer under
+	 * test doesn't support <code>SerializationProvider.STRING</code> it must
+	 * handle string payloads in this test correctly, i.e. as objects or binary.
+	 * </p>
 	 */
 	@Test
 	public void T11_serializeAndDeserialize_Whitespaces() {
@@ -107,16 +157,20 @@ public abstract class AbstractSerializerTests {
 			assertEquals("Deserialized payload differs from serialized one.",
 					payload, ser.deserialize(o));
 		} catch (SerializationException e) {
-			e.printStackTrace();
 			fail("Caught unexpected serialization exception!");
 		}
 	}
 
 	/**
-	 * Test if serialization and deserialization works by serializing a string
-	 * and deserializing it.
-	 * 
-	 * The string contains: numbers
+	 * <p>
+	 * This test checks the serialization and deserialization of numbers.
+	 * </p>
+	 * <p>
+	 * The test calls for serilizer of format
+	 * <code>SerializationProvider.STRING</code>. Although the serializer under
+	 * test doesn't support <code>SerializationProvider.STRING</code> it must
+	 * handle string payloads in this test correctly, i.e. as objects or binary.
+	 * </p>
 	 */
 	@Test
 	public void T12_serializeAndDeserialize_Numbers() {
@@ -128,16 +182,21 @@ public abstract class AbstractSerializerTests {
 			assertEquals("Deserialized payload differs from serialized one.",
 					payload, ser.deserialize(o));
 		} catch (SerializationException e) {
-			e.printStackTrace();
 			fail("Caught unexpected serialization exception!");
 		}
 	}
 
 	/**
-	 * Test if serialization and deserialization works by serializing a string
-	 * and deserializing it.
-	 * 
-	 * The string contains: special characters
+	 * <p>
+	 * This test checks the serialization and deserialization of special
+	 * characters.
+	 * </p>
+	 * <p>
+	 * The test calls for serilizer of format
+	 * <code>SerializationProvider.STRING</code>. Although the serializer under
+	 * test doesn't support <code>SerializationProvider.STRING</code> it must
+	 * handle string payloads in this test correctly, i.e. as objects or binary.
+	 * </p>
 	 */
 	@Test
 	public void T13_serializeAndDeserialize_SpecialCharacters() {
@@ -149,15 +208,21 @@ public abstract class AbstractSerializerTests {
 			assertEquals("Deserialized payload differs from serialized one.",
 					payload, ser.deserialize(o));
 		} catch (SerializationException e) {
-			e.printStackTrace();
 			fail("Caught unexpected serialization exception!");
 		}
 	}
 
 	/**
-	 * Test if serialization of NULL works correctly by throwing a null pointer
-	 * exception.
-	 * 
+	 * <p>
+	 * API claims to throw Null Pointer Exception if argument is NULL for
+	 * serialization.
+	 * </p>
+	 * <p>
+	 * The test calls for serilizer of format
+	 * <code>SerializationProvider.STRING</code>. Although the serializer under
+	 * test doesn't support <code>SerializationProvider.STRING</code> it must
+	 * handle NULL correctly.
+	 * </p>
 	 */
 	@Test
 	public void T14_serialize_NullArgument() {
@@ -166,18 +231,25 @@ public abstract class AbstractSerializerTests {
 			ser.serialize(null);
 			fail("Didn't catch expected null pointer exception!");
 		} catch (SerializationException e) {
-			e.printStackTrace();
-			fail("Catch serialization exception - did not expect that!");
+			fail("Caught serialization exception - did not expect that!");
 		} catch (NullPointerException e) {
-			e.printStackTrace();
-			assertTrue("Catched expected NPE exception!", true);
+			assertTrue("Caught expected NPE exception!", true);
+		} catch (Exception e) {
+			fail("Caught non expected exception!");
 		}
 	}
 
 	/**
-	 * Test if deserialization of NULL works correctly by throwing a
-	 * serialization exception.
-	 * 
+	 * <p>
+	 * API claims to throw Null Pointer Exception if argument is NULL for
+	 * deserialization.
+	 * </p>
+	 * <p>
+	 * The test calls for serilizer of format
+	 * <code>SerializationProvider.STRING</code>. Although the serializer under
+	 * test doesn't support <code>SerializationProvider.STRING</code> it must
+	 * handle NULL correctly.
+	 * </p>
 	 */
 	@Test
 	public void T15_deserialize_NullArgument() {
@@ -186,15 +258,15 @@ public abstract class AbstractSerializerTests {
 			ser.deserialize(null);
 			fail("Didn't catch expected null pointer exception!");
 		} catch (SerializationException e) {
-			e.printStackTrace();
-			fail("Catch serialization exception - did not expect that!");
+			fail("Caught serialization exception - did not expect that!");
 		} catch (NullPointerException e) {
-			e.printStackTrace();
-			assertTrue("Catched expected NPE exception!", true);
+			assertTrue("Caught expected NPE exception!", true);
+		} catch (Exception e) {
+			fail("Caught non expected exception!");
 		}
 	}
 
-	// helper method to determine whether format is a correct one
+	// helper method that checks if format is allowed
 	private boolean matchesAllowedFormats(String format) {
 		if (SerializationProvider.BINARY.equals(format)) {
 			return true;
