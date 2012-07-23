@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.easymock.EasyMock;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import de.ovgu.dke.glue.api.serialization.SerializationException;
@@ -40,41 +39,30 @@ public abstract class AbstractSerializationProviderTests {
 
 	// used to store mock serializers during test
 	private ArrayList<Serializer> availableSerializers = null;
+	// builder to construct implementation specific providers
+	private SerializationProviderBuilder spbuilder = null;
+	// maximum number of serializers provided by an provider instance
+	private int numberOfSerializers = 0;
 
-	@Before
-	public void setUp() throws Exception {
+	/**
+	 * Test case constructor.
+	 * 
+	 * @param builder
+	 *            is used to create an implementation specific
+	 *            {@link SerializationProvider} providing predefined serializers
+	 * @param numberOfSerializers
+	 *            that can be provided by a provider instance
+	 */
+	public AbstractSerializationProviderTests(
+			SerializationProviderBuilder builder, int numberOfSerializers) {
+		this.spbuilder = builder;
+		this.numberOfSerializers = numberOfSerializers;
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		availableSerializers = null;
 	}
-
-	/**
-	 * <p>
-	 * Providers can provide different serializers at runtime. The number of
-	 * provided serializers is important for testing purposes. Via overriding
-	 * this method the number of possibly provided serializers should be
-	 * returned.
-	 * </p>
-	 * 
-	 * @return maximum number of provided serializers
-	 */
-	public abstract int getNumberOfSerializers();
-
-	/**
-	 * <p>
-	 * This method is used to create an implementation specific
-	 * {@link SerializationProvider} providing the serializers determined by a
-	 * serializers list.
-	 * </p>
-	 * 
-	 * @param serializers
-	 *            that should be provided by the provider
-	 * @return provider instance under test
-	 */
-	public abstract SerializationProvider getSerializationProvider(
-			List<Serializer> serializers);
 
 	/**
 	 * <p>
@@ -85,11 +73,11 @@ public abstract class AbstractSerializationProviderTests {
 	@Test
 	public void T00_AvailableFormats() {
 		// get SerializationProvider for test
-		SerializationProvider provider = getSerializationProvider(getSerializers());
+		SerializationProvider provider = spbuilder.build(getSerializers());
 		// check count
 		assertEquals(
 				"Number of returned serializers doesn't match expected number.",
-				Math.min(availableSerializers.size(), getNumberOfSerializers()),
+				Math.min(availableSerializers.size(), numberOfSerializers),
 				provider.availableFormats().size());
 		// check order
 		for (int i = 0; i < availableSerializers.size(); i++)
@@ -107,27 +95,12 @@ public abstract class AbstractSerializationProviderTests {
 	 */
 	@Test
 	public void T01_AvailableFormats_NullSerializer() {
-		int num = getNumberOfSerializers();
-		switch (num) {
-		case Integer.MAX_VALUE:
-			// null serializer
-			try {
-				List<Serializer> list = getSerializers();
-				list.add(null);
-				getSerializationProvider(list);
-				fail("No exception - expected NullPointerException.");
-			} catch (NullPointerException e) {
-				assertTrue(true);
-			}
-		case 1:
-			// null serializer list
-			try {
-				getSerializationProvider(null);
-				fail("No exception - expected NullPointerException.");
-			} catch (NullPointerException e) {
-				assertTrue(true);
-			}
-			break;
+		// null serializer list
+		try {
+			spbuilder.build(null);
+			fail("No exception - expected NullPointerException.");
+		} catch (NullPointerException e) {
+			assertTrue(true);
 		}
 	}
 
@@ -138,7 +111,7 @@ public abstract class AbstractSerializationProviderTests {
 	 */
 	@Test
 	public void T10_GetSerializer() {
-		SerializationProvider provider = getSerializationProvider(getSerializers());
+		SerializationProvider provider = spbuilder.build(getSerializers());
 		// get the serializer
 		try {
 			assertEquals("Returned first serializer doesn't equal expected.",
@@ -156,7 +129,7 @@ public abstract class AbstractSerializationProviderTests {
 	 */
 	@Test
 	public void T11_GetSerializers_NoSuitableSerializer() {
-		SerializationProvider provider = getSerializationProvider(getSerializers());
+		SerializationProvider provider = spbuilder.build(getSerializers());
 		// get the serializer
 		try {
 			provider.getSerializer(SerializationProvider.JAVA);
@@ -173,7 +146,7 @@ public abstract class AbstractSerializationProviderTests {
 	 */
 	@Test
 	public void T12_GetSerializers_NullArgument() {
-		SerializationProvider provider = getSerializationProvider(getSerializers());
+		SerializationProvider provider = spbuilder.build(getSerializers());
 		// get the serializer
 		try {
 			provider.getSerializer(null);
@@ -200,8 +173,7 @@ public abstract class AbstractSerializationProviderTests {
 		EasyMock.replay(binSerializer);
 		EasyMock.replay(stringSerializer);
 
-		int num = getNumberOfSerializers();
-		switch (num) {
+		switch (numberOfSerializers) {
 		case 1:
 			availableSerializers.add(binSerializer);
 			break;

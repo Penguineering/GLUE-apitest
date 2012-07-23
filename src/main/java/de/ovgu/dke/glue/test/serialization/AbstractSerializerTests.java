@@ -29,85 +29,32 @@ import de.ovgu.dke.glue.api.serialization.Serializer;
  */
 public abstract class AbstractSerializerTests {
 
+	// builder to construct implementation specific serializers
+	private Serializer serializer = null;
+
 	/**
-	 * <p>
-	 * This method must be overridden by an implementation specific variant that
-	 * returns the serializer implementation uner test.
-	 * </p>
+	 * Test case constructor.
 	 * 
-	 * @param format
-	 *            if needed for instantiation of serializer, else it can be
-	 *            ignored
-	 * @return serializer instance that will be tested
+	 * @param serializer
+	 *            under test
 	 */
-	public abstract Serializer getSerializer(String format);
+	public AbstractSerializerTests(Serializer serializer) {
+		this.serializer = serializer;
+	}
 
 	/**
 	 * <p>
-	 * Test whether serializer returns correct format. Therefore the allowed
-	 * format <code>SerializationProvider.BINARY</code> is used to get a
-	 * serializer.
-	 * </p>
-	 * <p>
-	 * In case of serializers that don't support dynamic formats this test will
-	 * always pass if the internal format is allowed.
+	 * Test whether serializer returns correct format.
 	 * </p>
 	 */
 	@Test
 	public void T00_getFormat() {
-		Serializer ser = getSerializer(SerializationProvider.BINARY);
 		assertNotNull(
 				"Serializer doesn't handle formats correctly - NULL format.",
-				ser.getFormat());
+				serializer.getFormat());
 		assertTrue(
 				"Serializer doesn't handle formats correctly - not allowed format",
-				matchesAllowedFormats(ser.getFormat()));
-	}
-
-	/**
-	 * <p>
-	 * {@link Serializer} interface claims that the serializer have to take care
-	 * that the format is one of the defined in {@link SerializationProvider}.
-	 * It is not specified how this should be handled. Test case tests only
-	 * return value. Test fails if not allowed format is returned. </p
-	 * <p>
-	 * In case of serializers that don't support dynamic formats this test will
-	 * always pass if the internal format is allowed.
-	 * </p>
-	 */
-	@Test
-	public void T01_getFormat_UnknownFormat() {
-		Serializer ser = getSerializer("WRONG_FORMAT");
-		assertNotSame(
-				"Serializer doesn't handle formats correctly - not allowed format",
-				"WRONG_FORMAT", ser.getFormat());
-		assertTrue(
-				"Serializer doesn't handle formats correctly - not allowed format",
-				matchesAllowedFormats(ser.getFormat()));
-	}
-
-	/**
-	 * <p>
-	 * {@link Serializer} interface claims that the serializer have to take care
-	 * that the format is one of the defined in {@link SerializationProvider}.
-	 * It is not specified how this should be handled. Test case tests if
-	 * serializer implementation handles NULL values. Test fails if NULL or not
-	 * allowed format is returned. </p
-	 * <p>
-	 * <p>
-	 * In case of serializers that don't support dynamic formats this test will
-	 * always pass if the internal format is allowed.
-	 * </p>
-	 */
-	@Test
-	public void T02_getFormat_NullFormat() {
-		Serializer ser = getSerializer(null);
-		assertNotNull(
-				"Serializer doesn't handle formats correctly - NULL format.",
-				ser.getFormat());
-		assertTrue(
-				"Serializer doesn't handle formats correctly - not allowed format",
-				matchesAllowedFormats(ser.getFormat()));
+				matchesAllowedFormats(serializer.getFormat()));
 	}
 
 	/**
@@ -124,12 +71,11 @@ public abstract class AbstractSerializerTests {
 	@Test
 	public void T10_serializeAndDeserialize_Characters() {
 		String payload = "thisIsADataPackage";
-		Serializer ser = getSerializer(SerializationProvider.STRING);
 		Object o;
 		try {
-			o = ser.serialize(payload);
+			o = serializer.serialize(payload);
 			assertEquals("Deserialized payload differs from serialized one.",
-					payload, ser.deserialize(o));
+					payload, serializer.deserialize(o));
 		} catch (SerializationException e) {
 			fail("Caught unexpected serialization exception!");
 		}
@@ -150,12 +96,11 @@ public abstract class AbstractSerializerTests {
 	@Test
 	public void T11_serializeAndDeserialize_Whitespaces() {
 		String payload = "this is a data package";
-		Serializer ser = getSerializer(SerializationProvider.STRING);
 		Object o;
 		try {
-			o = ser.serialize(payload);
+			o = serializer.serialize(payload);
 			assertEquals("Deserialized payload differs from serialized one.",
-					payload, ser.deserialize(o));
+					payload, serializer.deserialize(o));
 		} catch (SerializationException e) {
 			fail("Caught unexpected serialization exception!");
 		}
@@ -175,12 +120,11 @@ public abstract class AbstractSerializerTests {
 	@Test
 	public void T12_serializeAndDeserialize_Numbers() {
 		String payload = "1234567890";
-		Serializer ser = getSerializer(SerializationProvider.STRING);
 		Object o;
 		try {
-			o = ser.serialize(payload);
+			o = serializer.serialize(payload);
 			assertEquals("Deserialized payload differs from serialized one.",
-					payload, ser.deserialize(o));
+					payload, serializer.deserialize(o));
 		} catch (SerializationException e) {
 			fail("Caught unexpected serialization exception!");
 		}
@@ -201,12 +145,11 @@ public abstract class AbstractSerializerTests {
 	@Test
 	public void T13_serializeAndDeserialize_SpecialCharacters() {
 		String payload = "°^!\"§$%&/()=?`´*+~#'-_:.;,<>|'{[]}\\";
-		Serializer ser = getSerializer(SerializationProvider.STRING);
 		Object o;
 		try {
-			o = ser.serialize(payload);
+			o = serializer.serialize(payload);
 			assertEquals("Deserialized payload differs from serialized one.",
-					payload, ser.deserialize(o));
+					payload, serializer.deserialize(o));
 		} catch (SerializationException e) {
 			fail("Caught unexpected serialization exception!");
 		}
@@ -226,9 +169,8 @@ public abstract class AbstractSerializerTests {
 	 */
 	@Test
 	public void T14_serialize_NullArgument() {
-		Serializer ser = getSerializer(SerializationProvider.STRING);
 		try {
-			ser.serialize(null);
+			serializer.serialize(null);
 			fail("Didn't catch expected null pointer exception!");
 		} catch (SerializationException e) {
 			fail("Caught serialization exception - did not expect that!");
@@ -253,9 +195,8 @@ public abstract class AbstractSerializerTests {
 	 */
 	@Test
 	public void T15_deserialize_NullArgument() {
-		Serializer ser = getSerializer(SerializationProvider.STRING);
 		try {
-			ser.deserialize(null);
+			serializer.deserialize(null);
 			fail("Didn't catch expected null pointer exception!");
 		} catch (SerializationException e) {
 			fail("Caught serialization exception - did not expect that!");
