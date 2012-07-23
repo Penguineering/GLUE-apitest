@@ -11,12 +11,12 @@ import de.ovgu.dke.glue.api.serialization.Serializer;
  * <p>
  * This test case checks whether an implementation of {@link Serializer} follows
  * the rules defined by the Glue-API or not. All you have to do is to extend
- * this test case and override the <code>getSerializer(String format)</code>
- * -Method that injects your serializer implementation into the test case.
+ * this test case and override the <code>getSerializer</code>-Method that
+ * injects your serializer implementation into the test case.
  * </p>
  * <p>
  * It is highly recommended that you extend this basic test case according to
- * your implementation specific test purposes. For example
+ * your implementation specific test purposes. For example not all
  * {@link SerializationException} can't be tested.
  * </p>
  * <p>
