@@ -71,7 +71,7 @@ public abstract class AbstractSerializationProviderTests {
 	 * </p>
 	 */
 	@Test
-	public void T00_AvailableFormats() {
+	public void T00_availableFormats() {
 		// get SerializationProvider for test
 		SerializationProvider provider = spbuilder.build(getSerializers());
 		// check count
@@ -94,7 +94,7 @@ public abstract class AbstractSerializationProviderTests {
 	 * </p>
 	 */
 	@Test
-	public void T01_AvailableFormats_NullSerializer() {
+	public void T01_availableFormats_NullSerializer() {
 		// null serializer list
 		try {
 			spbuilder.build(null);
@@ -110,7 +110,7 @@ public abstract class AbstractSerializationProviderTests {
 	 * </p>
 	 */
 	@Test
-	public void T10_GetSerializer() {
+	public void T10_getSerializer() {
 		SerializationProvider provider = spbuilder.build(getSerializers());
 		// get the serializer
 		try {
@@ -128,7 +128,7 @@ public abstract class AbstractSerializationProviderTests {
 	 * </p>
 	 */
 	@Test
-	public void T11_GetSerializers_NoSuitableSerializer() {
+	public void T11_getSerializers_NoSuitableSerializer() {
 		SerializationProvider provider = spbuilder.build(getSerializers());
 		// get the serializer
 		try {
@@ -145,7 +145,7 @@ public abstract class AbstractSerializationProviderTests {
 	 * </p>
 	 */
 	@Test
-	public void T12_GetSerializers_NullArgument() {
+	public void T12_getSerializers_NullArgument() {
 		SerializationProvider provider = spbuilder.build(getSerializers());
 		// get the serializer
 		try {
