@@ -51,10 +51,21 @@ public abstract class AbstractSerializationProviderTests {
 	 *            is used to create an implementation specific
 	 *            {@link SerializationProvider} providing predefined serializers
 	 * @param numberOfSerializers
-	 *            that can be provided by a provider instance
+	 *            that can be provided by a provider instance, must be an
+	 *            integer greater than zero
+	 * @throws NullPointerException
+	 *             if the builder parameter is null.
+	 * @throws IllegalArgumentException
+	 *             if the numberOfSerializers is smaller than or equals zero
 	 */
 	public AbstractSerializationProviderTests(
 			SerializationProviderBuilder builder, int numberOfSerializers) {
+		if (builder == null)
+			throw new NullPointerException("builder parameter may not be null!");
+		if (numberOfSerializers <= 0)
+			throw new IllegalArgumentException(
+					"number of serializers is smaller than or equals zero!");
+
 		this.spbuilder = builder;
 		this.numberOfSerializers = numberOfSerializers;
 	}
