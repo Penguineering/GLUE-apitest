@@ -16,16 +16,15 @@ import de.ovgu.dke.glue.api.serialization.Serializer;
 /**
  * <p>
  * This test case checks whether an implementation of
- * {@link SerializationProvider} follows the rules defined by the Glue-API or
- * not. All you have to do is to extend this test case and override the
- * <code>getSerializationProvider</code>- and
- * <code>getNumberOfSerializers</code>-Method that injects your provider
- * implementation into the test case.
+ * {@link SerializationProvider} follows the rules defined by the Glue-API. All
+ * you have to do is to extend this test case and implement a constructor that
+ * instantiates this abstract class with an {@link SerializationProviderBuilder}
+ * that builds your provider implementation for the test case.
  * </p>
  * <p>
  * It is highly recommended that you extend this basic test case according to
  * your implementation specific test purposes. For example not all
- * {@link SerializationException} can't be tested.
+ * {@link SerializationException} can be tested.
  * </p>
  * <p>
  * Of course you are free to extend this test case for your specific test

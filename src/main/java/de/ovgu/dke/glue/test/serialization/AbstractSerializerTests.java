@@ -49,161 +49,49 @@ public abstract class AbstractSerializerTests {
 	 */
 	@Test
 	public void T00_getFormat() {
-		assertNotNull(
-				"Serializer doesn't handle formats correctly - NULL format.",
+		assertNotNull("Serializer returns NULL as format.",
 				serializer.getFormat());
-		assertTrue(
-				"Serializer doesn't handle formats correctly - not allowed format",
+		assertTrue("Serializer doesn't return allowed format.",
 				matchesAllowedFormats(serializer.getFormat()));
 	}
 
 	/**
 	 * <p>
-	 * This test checks the serialization and deserialization of characters.
-	 * </p>
-	 * <p>
-	 * The test calls for serilizer of format
-	 * <code>SerializationProvider.STRING</code>. Although the serializer under
-	 * test doesn't support <code>SerializationProvider.STRING</code> it must
-	 * handle string payloads in this test correctly, i.e. as objects or binary.
+	 * The test tries to serialize NULL. If an exception is thrown it must be a
+	 * NPE any other exception leads to a failure. If no exception is thrown the
+	 * test will pass because serializer can be able to handle NULL.
 	 * </p>
 	 */
 	@Test
-	public void T10_serializeAndDeserialize_Characters() {
-		String payload = "thisIsADataPackage";
-		Object o;
-		try {
-			o = serializer.serialize(payload);
-			assertEquals("Deserialized payload differs from serialized one.",
-					payload, serializer.deserialize(o));
-		} catch (SerializationException e) {
-			fail("Caught unexpected serialization exception!");
-		}
-	}
-
-	/**
-	 * <p>
-	 * This test checks the serialization and deserialization of characters and
-	 * whitespaces.
-	 * </p>
-	 * <p>
-	 * The test calls for serilizer of format
-	 * <code>SerializationProvider.STRING</code>. Although the serializer under
-	 * test doesn't support <code>SerializationProvider.STRING</code> it must
-	 * handle string payloads in this test correctly, i.e. as objects or binary.
-	 * </p>
-	 */
-	@Test
-	public void T11_serializeAndDeserialize_Whitespaces() {
-		String payload = "this is a data package";
-		Object o;
-		try {
-			o = serializer.serialize(payload);
-			assertEquals("Deserialized payload differs from serialized one.",
-					payload, serializer.deserialize(o));
-		} catch (SerializationException e) {
-			fail("Caught unexpected serialization exception!");
-		}
-	}
-
-	/**
-	 * <p>
-	 * This test checks the serialization and deserialization of numbers.
-	 * </p>
-	 * <p>
-	 * The test calls for serilizer of format
-	 * <code>SerializationProvider.STRING</code>. Although the serializer under
-	 * test doesn't support <code>SerializationProvider.STRING</code> it must
-	 * handle string payloads in this test correctly, i.e. as objects or binary.
-	 * </p>
-	 */
-	@Test
-	public void T12_serializeAndDeserialize_Numbers() {
-		String payload = "1234567890";
-		Object o;
-		try {
-			o = serializer.serialize(payload);
-			assertEquals("Deserialized payload differs from serialized one.",
-					payload, serializer.deserialize(o));
-		} catch (SerializationException e) {
-			fail("Caught unexpected serialization exception!");
-		}
-	}
-
-	/**
-	 * <p>
-	 * This test checks the serialization and deserialization of special
-	 * characters.
-	 * </p>
-	 * <p>
-	 * The test calls for serilizer of format
-	 * <code>SerializationProvider.STRING</code>. Although the serializer under
-	 * test doesn't support <code>SerializationProvider.STRING</code> it must
-	 * handle string payloads in this test correctly, i.e. as objects or binary.
-	 * </p>
-	 */
-	@Test
-	public void T13_serializeAndDeserialize_SpecialCharacters() {
-		String payload = "°^!\"§$%&/()=?`´*+~#'-_:.;,<>|'{[]}\\";
-		Object o;
-		try {
-			o = serializer.serialize(payload);
-			assertEquals("Deserialized payload differs from serialized one.",
-					payload, serializer.deserialize(o));
-		} catch (SerializationException e) {
-			fail("Caught unexpected serialization exception!");
-		}
-	}
-
-	/**
-	 * <p>
-	 * API claims to throw Null Pointer Exception if argument is NULL for
-	 * serialization.
-	 * </p>
-	 * <p>
-	 * The test calls for serilizer of format
-	 * <code>SerializationProvider.STRING</code>. Although the serializer under
-	 * test doesn't support <code>SerializationProvider.STRING</code> it must
-	 * handle NULL correctly.
-	 * </p>
-	 */
-	@Test
-	public void T14_serialize_NullArgument() {
+	public void T10_serialize_NullArgument() {
 		try {
 			serializer.serialize(null);
-			fail("Didn't catch expected null pointer exception!");
 		} catch (SerializationException e) {
 			fail("Caught serialization exception - did not expect that!");
 		} catch (NullPointerException e) {
 			assertTrue("Caught expected NPE exception!", true);
 		} catch (Exception e) {
-			fail("Caught non expected exception!");
+			fail("Caught unexpected exception!");
 		}
 	}
 
 	/**
 	 * <p>
-	 * API claims to throw Null Pointer Exception if argument is NULL for
-	 * deserialization.
-	 * </p>
-	 * <p>
-	 * The test calls for serilizer of format
-	 * <code>SerializationProvider.STRING</code>. Although the serializer under
-	 * test doesn't support <code>SerializationProvider.STRING</code> it must
-	 * handle NULL correctly.
+	 * The test tries to deserialize NULL. If an exception is thrown it must be
+	 * a NPE any other exception leads to a failure. If no exception is thrown
+	 * the test will pass because serializer can be able to handle NULL.
 	 * </p>
 	 */
 	@Test
-	public void T15_deserialize_NullArgument() {
+	public void T11_deserialize_NullArgument() {
 		try {
 			serializer.deserialize(null);
-			fail("Didn't catch expected null pointer exception!");
 		} catch (SerializationException e) {
 			fail("Caught serialization exception - did not expect that!");
 		} catch (NullPointerException e) {
 			assertTrue("Caught expected NPE exception!", true);
 		} catch (Exception e) {
-			fail("Caught non expected exception!");
+			fail("Caught unexpected exception!");
 		}
 	}
 
