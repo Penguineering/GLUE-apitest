@@ -168,6 +168,32 @@ public abstract class AbstractSerializationProviderTests {
 		}
 	}
 
+	/**
+	 * <p>
+	 * Check the immutable requirement on the available format list.
+	 * </p>
+	 */
+	@Test
+	public void T20_immutableFormatList() {
+		SerializationProvider provider = spbuilder.build(getSerializers());
+		List<String> formats = provider.availableFormats();
+		String newFormat = "A new format!";
+
+		// if the modification throws an exception this is also okay
+		try {
+			formats.add(newFormat);
+			// test sizes of lists
+			assertTrue(
+					"Available format list can be modified - breaks the immutable requirement.",
+					provider.availableFormats().size() == formats.size() - 1);
+		} catch (Exception e) {
+			assertTrue(true);
+		}
+		// check if new entry isn't in format list
+		assertTrue("Also size is okay, the new format was added to the list.",
+				!provider.availableFormats().contains(newFormat));
+	}
+
 	// helper method to create mocked serializers for test
 	private List<Serializer> getSerializers() {
 		availableSerializers = new ArrayList<Serializer>();
