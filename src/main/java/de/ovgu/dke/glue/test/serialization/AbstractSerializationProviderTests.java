@@ -53,7 +53,7 @@ import de.ovgu.dke.glue.api.serialization.Serializer;
  * purposes.
  * </p>
  * 
- * @author Sebastian Dorok
+ * @author Sebastian Dorok (sebastian.dorok@st.ovgu.de)
  * 
  */
 public abstract class AbstractSerializationProviderTests {

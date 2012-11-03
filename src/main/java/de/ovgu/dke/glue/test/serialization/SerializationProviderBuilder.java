@@ -31,7 +31,7 @@ import de.ovgu.dke.glue.api.serialization.Serializer;
  * This interface provides a builder to construct {@link SerializationProvider}
  * instances.
  * 
- * @author Sebastian Dorok
+ * @author Sebastian Dorok (sebastian.dorok@st.ovgu.de)
  * 
  */
 public interface SerializationProviderBuilder {
