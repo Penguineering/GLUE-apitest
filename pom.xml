@@ -7,7 +7,32 @@
 	<version>0.2.3-SNAPSHOT</version>
 	
 	<name>glue-apitest</name>
+	<description>
+		GLUE is a Java library that simplifies asynchronous communication between 
+		heterogeneous software components. This package contains the base test 
+		methods for various API implementations.
+	</description>
+	<url>https://projects.dke-research.de/redmine/projects/glue/</url>
 
+	<licenses>
+	    <license>
+	        <name>The Apache Software License, Version 2.0</name>
+	        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+	        <distribution>repo</distribution>
+	    </license>
+	</licenses>
+	
+	<scm>
+	    <url>https://projects.dke-research.de/svn/tools/glue/glue-apitest/</url>	    
+	</scm>
+	
+	<developers>
+	    <developer>
+	        <name>Sebastian Dorok</name>
+			<email>sebastian.dorok@st.ovgu.de</email>	        
+       </developer>
+	</developers>
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- skip tests by default - FIXME -->
@@ -33,28 +58,36 @@
 					<skipTests>${skipTests}</skipTests>
 				</configuration>
 			</plugin>
-		</plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>			
+			<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-javadoc-plugin</artifactId>
+        		<version>2.9</version>
+        		<configuration>
+          			<show>private</show>
+          			<nohelp>true</nohelp>
+        		</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+        	</plugin>			
+		</plugins>			
 	</build>
-
-	<repositories>
-		<repository>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-				<checksumPolicy>fail</checksumPolicy>
-			</snapshots>
-
-			<id>nexus</id>
-			<name>dke-group public nexus repository</name>
-			<url>http://svndke.cs.uni-magdeburg.de:8081/nexus/content/groups/public/</url>
-			<layout>default</layout>
-		</repository>
-	</repositories>
 
 	<dependencies>
 		<dependency>
