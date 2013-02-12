@@ -4,7 +4,7 @@
 	
 	<groupId>de.ovgu.dke.glue</groupId>
 	<artifactId>glue-apitest</artifactId>
-	<version>0.2.3-SNAPSHOT</version>
+	<version>0.2.3</version>
 	
 	<name>glue-apitest</name>
 	<description>
@@ -31,7 +31,11 @@
 	        <name>Sebastian Dorok</name>
 			<email>sebastian.dorok@st.ovgu.de</email>	        
        </developer>
-	</developers>
+	    <developer>
+	        <name>Stefan Haun</name>
+			<email>stefan.haun@ovgu.de</email>	        
+       </developer>
+   	</developers>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
